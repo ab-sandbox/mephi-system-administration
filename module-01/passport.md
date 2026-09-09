@@ -130,3 +130,72 @@ root          22  0.0  0.0      0     0 ?        S    Sep08   0:00 [ksoftirqd/1]
 ```
 
 В системе запущены пользовательские процессы и потоки ядра, а `/sbin/init` работает как процесс с PID 1.
+
+### Состояние системы
+
+```bash
+$ top -bn1 | head -20
+top - 18:00:46 up  2:01,  1 user,  load average: 0.00, 0.00, 0.00
+Tasks:  99 total,   1 running,  98 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.0 us,  3.1 sy,  0.0 ni, 96.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   1957.9 total,   1561.9 free,    184.5 used,    211.5 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   1621.7 avail Mem
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   1012 ubuntu    20   0   10768   3860   3252 R   6.7   0.2   0:00.01 top
+      1 root      20   0  166288  11656   8424 S   0.0   0.6   0:00.77 systemd
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kthreadd
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp
+      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 slub_flushwq
+      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H+
+     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_percpu_wq
+     11 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_ru+
+     12 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_tr+
+     13 root      20   0       0      0      0 S   0.0   0.0   0:00.01 ksoftirqd/0
+     14 root      20   0       0      0      0 I   0.0   0.0   0:00.06 rcu_sched
+```
+
+На момент проверки система практически простаивает: 96,9% CPU находится в состоянии idle, запущено 99 задач, из них одна выполняется.
+
+### Информация о памяти из `/proc`
+
+```bash
+$ cat /proc/meminfo | head -10
+MemTotal:        2004932 kB
+MemFree:         1599428 kB
+MemAvailable:    1660716 kB
+Buffers:           19064 kB
+Cached:           169644 kB
+SwapCached:            0 kB
+Active:            86624 kB
+Inactive:         154484 kB
+Active(anon):        912 kB
+Inactive(anon):    61532 kB
+```
+
+Ядро сообщает о примерно 2 ГБ оперативной памяти, из которых около 1,66 ГБ доступны для использования.
+
+### Системная конфигурация
+
+```bash
+$ ls -l /etc/ | head -15
+total 828
+drwxr-xr-x 2 root root       4096 Aug 26 14:52 PackageKit
+drwxr-xr-x 4 root root       4096 Aug 26 14:52 X11
+-rw-r--r-- 1 root root       3028 Aug 26 14:50 adduser.conf
+drwxr-xr-x 2 root root       4096 Aug 26 14:54 alternatives
+drwxr-xr-x 3 root root       4096 Aug 26 14:52 apparmor
+drwxr-xr-x 8 root root       4096 Aug 26 14:52 apparmor.d
+drwxr-xr-x 3 root root       4096 Aug 26 14:52 apport
+drwxr-xr-x 8 root root       4096 Aug 26 14:55 apt
+-rw-r--r-- 1 root root       2319 Jan  6  2022 bash.bashrc
+-rw-r--r-- 1 root root         45 Nov 11  2021 bash_completion
+drwxr-xr-x 2 root root       4096 Aug 26 14:52 bash_completion.d
+-rw-r--r-- 1 root root        367 Dec 16  2020 bindresvport.blacklist
+drwxr-xr-x 2 root root       4096 Apr  7  2022 binfmt.d
+drwxr-xr-x 2 root root       4096 Aug 26 14:52 byobu
+```
+
+Каталог `/etc` содержит системные конфигурационные файлы и подкаталоги, в основном принадлежащие пользователю `root`.
