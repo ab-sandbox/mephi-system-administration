@@ -199,3 +199,115 @@ drwxr-xr-x 2 root root       4096 Aug 26 14:52 byobu
 ```
 
 Каталог `/etc` содержит системные конфигурационные файлы и подкаталоги, в основном принадлежащие пользователю `root`.
+
+### Процессор
+
+```bash
+$ cat /proc/cpuinfo | grep "model name" | uniq
+model name	: 13th Gen Intel(R) Core(TM) i7-13700H
+```
+
+Виртуальная машина использует виртуальные процессоры, предоставленные на базе Intel Core i7-13700H.
+
+### Дерево процессов
+
+```bash
+$ pstree -p | head -30 || ps -ef --forest | head -30
+systemd(1)-+-agetty(631)
+           |-agetty(647)
+           |-cron(608)
+           |-dbus-daemon(610)
+           |-irqbalance(616)---{irqbalance}(620)
+           |-multipathd(412)-+-{multipathd}(417)
+           |                 |-{multipathd}(418)
+           |                 |-{multipathd}(419)
+           |                 |-{multipathd}(420)
+           |                 |-{multipathd}(421)
+           |                 `-{multipathd}(422)
+           |-networkd-dispat(617)
+           |-polkitd(670)-+-{polkitd}(673)
+           |              `-{polkitd}(675)
+           |-rsyslogd(618)-+-{rsyslogd}(654)
+           |               |-{rsyslogd}(655)
+           |               `-{rsyslogd}(656)
+           |-snapd(622)-+-{snapd}(660)
+           |            |-{snapd}(661)
+           |            |-{snapd}(662)
+           |            |-{snapd}(663)
+           |            |-{snapd}(664)
+           |            |-{snapd}(687)
+           |            |-{snapd}(758)
+           |            `-{snapd}(793)
+           |-sshd(652)-+-sshd(737)---sshd(860)
+           |           `-sshd(922)---sshd(1000)---bash(1001)-+-head(1068)
+           |                                                 `-pstree(1067)
+           |-systemd(752)---(sd-pam)(753)
+           |-systemd-journal(376)
+```
+
+Дерево процессов начинается с `systemd` (PID 1), от которого запущены системные службы и пользовательские процессы.
+
+### Процесс PID 1
+
+```bash
+$ cat /proc/1/status
+Name:	systemd
+Umask:	0000
+State:	S (sleeping)
+Tgid:	1
+Ngid:	0
+Pid:	1
+PPid:	0
+TracerPid:	0
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+FDSize:	128
+Groups:
+NStgid:	1
+NSpid:	1
+NSpgid:	1
+NSsid:	1
+VmPeak:	  231676 kB
+VmSize:	  166288 kB
+VmLck:	       0 kB
+VmPin:	       0 kB
+VmHWM:	   11656 kB
+VmRSS:	   11656 kB
+RssAnon:	    3232 kB
+RssFile:	    8424 kB
+RssShmem:	       0 kB
+VmData:	   19408 kB
+VmStk:	     132 kB
+VmExe:	     896 kB
+VmLib:	    9056 kB
+VmPTE:	      88 kB
+VmSwap:	       0 kB
+HugetlbPages:	       0 kB
+CoreDumping:	0
+THP_enabled:	1
+Threads:	1
+SigQ:	0/7519
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	7be3c0fe28014a03
+SigIgn:	0000000000001000
+SigCgt:	00000001000004ec
+CapInh:	0000000000000000
+CapPrm:	000001ffffffffff
+CapEff:	000001ffffffffff
+CapBnd:	000001ffffffffff
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	0
+Seccomp_filters:	0
+Speculation_Store_Bypass:	thread vulnerable
+SpeculationIndirectBranch:	conditional enabled
+Cpus_allowed:	3
+Cpus_allowed_list:	0-1
+Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	1712
+nonvoluntary_ctxt_switches:	629
+```
+
+Процесс с PID 1 — `systemd`, запущенный от `root`, являющийся корневым процессом пользовательского пространства системы.
