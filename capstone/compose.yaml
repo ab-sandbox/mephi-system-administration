@@ -1,0 +1,7 @@
+services:
+  resource-monitor:
+    build:
+      context: ..
+      dockerfile: capstone/Dockerfile
+    image: resource-monitor:1.0
+    container_name: resource-monitor
