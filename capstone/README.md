@@ -13,7 +13,7 @@
 docker build -t resource-monitor:1.0 -f capstone/Dockerfile .
 ```
 
-Запуск через Docker Compose:
+Создание и запуск контейнера через Docker Compose:
 
 ```bash
 docker compose -f capstone/compose.yaml up -d --build
@@ -24,13 +24,10 @@ docker compose -f capstone/compose.yaml up -d --build
 ```bash
 docker compose -f capstone/compose.yaml ps
 docker exec resource-monitor tail -20 /var/www/monitor.log
+curl http://127.0.0.1:8080/monitor.log
 ```
 
-Остановка:
-
-```bash
-docker compose -f capstone/compose.yaml down
-```
+Контейнер публикует HTTP-сервис на порту `8080`.
 
 ### Хранилище
 
@@ -62,4 +59,89 @@ PV -> vg_data -> lv_data -> ext4 -> /mnt/lvm
 
 ### Reverse proxy и TLS
 
-Будет добавлено в модуле 4.
+Nginx используется как reverse proxy перед контейнером:
+
+```text
+Client
+   |
+ HTTPS :443
+   |
+ Nginx
+   |
+ HTTP :8080
+   |
+ Docker container
+   |
+ Python HTTP server
+```
+
+HTTP-запросы на порт `80` перенаправляются на HTTPS. Для учебного окружения используется self-signed TLS-сертификат.
+
+Конфигурация Nginx находится в:
+
+```text
+capstone/nginx/my-app.conf
+```
+
+Проверка конфигурации:
+
+```bash
+sudo nginx -t
+```
+
+Проверка перенаправления HTTP на HTTPS:
+
+```bash
+curl -I http://127.0.0.1/monitor.log
+```
+
+Проверка HTTPS:
+
+```bash
+curl -kI https://127.0.0.1/monitor.log
+```
+
+### Управление сервисом
+
+Контейнер управляется через systemd unit:
+
+```text
+capstone/systemd/resource-monitor.service
+```
+
+После установки unit-файла:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable resource-monitor
+sudo systemctl start resource-monitor
+```
+
+Проверка состояния:
+
+```bash
+systemctl status resource-monitor
+```
+
+Для дальнейшего управления сервисом используются:
+
+```bash
+sudo systemctl start resource-monitor
+sudo systemctl stop resource-monitor
+sudo systemctl restart resource-monitor
+```
+
+### Наблюдаемость
+
+События приложения доступны через systemd journal:
+
+```bash
+sudo journalctl -u resource-monitor
+```
+
+Запросы и ошибки reverse proxy записываются в стандартные логи Nginx:
+
+```bash
+sudo tail -f /var/log/nginx/access.log
+sudo tail -f /var/log/nginx/error.log
+```
