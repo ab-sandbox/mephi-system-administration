@@ -1,24 +1,16 @@
-## Системное администрирование
+## System Administration
 
-Учебные работы по курсу «Системное администрирование» магистратуры НИЯУ МИФИ.
+A collection of hands-on Linux system administration exercises and small projects.
 
-### Содержание
+### Projects
 
-#### Модуль 1. Карта системы и доступ
+- [System Passport](module-01/system-passport/passport.md) — system inspection and environment discovery using standard
+  Linux tools.
+- [Resource Monitor](module-02/resource-monitor/) — Bash script for periodically collecting memory, disk usage, and
+  system uptime information.
+- [Service Deployment](capstone/) — containerized service with Docker Compose, RAID/LVM storage, Nginx reverse proxy,
+  TLS, systemd integration, and basic observability.
 
-- [Паспорт системы](module-01/system-passport/passport.md) — базовая информация об учебной виртуальной машине, полученная через SSH средствами Linux.
+### Technologies
 
-#### Модуль 2. Shell и автоматизация
-
-- [Мониторинг ресурсов](module-02/resource-monitor/) — Bash-скрипт для периодического сбора информации об использовании памяти, дискового пространства и состоянии системы.
-
-### Окружение
-
-- Ubuntu 22.04 LTS
-- Multipass
-- SSH
-- Bash
-
-### Курс
-
-НИЯУ МИФИ · Магистратура «Разработка программного обеспечения» · Системное администрирование
+Linux · Bash · SSH · Docker · Docker Compose · RAID · LVM · Nginx · TLS · systemd
