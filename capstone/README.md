@@ -145,3 +145,21 @@ sudo journalctl -u resource-monitor
 sudo tail -f /var/log/nginx/access.log
 sudo tail -f /var/log/nginx/error.log
 ```
+
+### Результаты проверки
+
+#### Docker и мониторинг
+
+![Docker и мониторинг](assets/part1-docker.png)
+
+#### RAID и LVM
+
+![RAID и LVM](assets/part1-storage.png)
+
+#### Nginx и TLS
+
+![Nginx и TLS](assets/part2-web.png)
+
+#### systemd и журнал
+
+![systemd и журнал](assets/part2-service.png)
