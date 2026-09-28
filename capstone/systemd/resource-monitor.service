@@ -1,0 +1,12 @@
+[Unit]
+Description=Resource Monitor container
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker start -a resource-monitor
+ExecStop=/usr/bin/docker stop resource-monitor
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
