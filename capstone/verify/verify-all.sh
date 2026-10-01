@@ -33,7 +33,7 @@ docker exec resource-monitor pgrep -af script.sh
 
 echo
 echo "Latest monitoring data:"
-docker exec resource-monitor tail -15 /var/www/monitor.log
+docker exec resource-monitor tail -25 /var/www/monitor.log
 
 
 section "3. DOCKER"
